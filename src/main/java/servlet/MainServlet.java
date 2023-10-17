@@ -4,12 +4,23 @@ import controller.PostController;
 import repository.PostRepositoryImpl;
 import service.PostService;
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
+@WebServlet(name = "MainServlet", urlPatterns = "/api/posts/*")
 public class MainServlet extends HttpServlet {
     private PostController controller;
+
+    private static final String GET_METHOD = "GET";
+    private static final String POST_METHOD = "POST";
+    private static final String DELETE_METHOD = "DELETE";
+
+    private static final String API_PATH = "/api/posts";
+    private static final String ID_REGEX = "\\d+";
 
     @Override
     public void init() {
@@ -19,32 +30,33 @@ public class MainServlet extends HttpServlet {
     }
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) {
-        // если деплоились в root context, то достаточно этого
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             final var path = req.getRequestURI();
             final var method = req.getMethod();
-            // primitive routing
-            if (method.equals("GET") && path.equals("/api/posts")) {
+
+            if (GET_METHOD.equals(method) && API_PATH.equals(path)) {
                 controller.all(resp);
                 return;
             }
-            if (method.equals("GET") && path.matches("/api/posts/\\d+")) {
-                // easy way
-                final var id = Long.parseLong(path.substring(path.lastIndexOf("/")));
+
+            if (GET_METHOD.equals(method) && path.matches(API_PATH + "/" + ID_REGEX)) {
+                final var id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
                 controller.getById(id, resp);
                 return;
             }
-            if (method.equals("POST") && path.equals("/api/posts")) {
+
+            if (POST_METHOD.equals(method) && API_PATH.equals(path)) {
                 controller.save(req.getReader(), resp);
                 return;
             }
-            if (method.equals("DELETE") && path.matches("/api/posts/\\d+")) {
-                // easy way
-                final var id = Long.parseLong(path.substring(path.lastIndexOf("/")));
+
+            if (DELETE_METHOD.equals(method) && path.matches(API_PATH + "/" + ID_REGEX)) {
+                final var id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
                 controller.removeById(id, resp);
                 return;
             }
+
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } catch (Exception e) {
             e.printStackTrace();

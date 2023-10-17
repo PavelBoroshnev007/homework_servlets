@@ -5,6 +5,7 @@ import model.Post;
 import repository.PostRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PostService {
     private final PostRepository repository;
@@ -18,14 +19,18 @@ public class PostService {
     }
 
     public Post getById(long id) {
-        return repository.getById(id).orElseThrow(NotFoundException::new);
+        Optional<Post> postOptional = repository.getById(id);
+        if (postOptional.isEmpty()) {
+            throw new NotFoundException("Post with id " + id + " not found");
+        }
+        return postOptional.get();
     }
 
     public Post save(Post post) {
         return repository.save(post);
     }
 
-    public void removeById(long id) {
-        repository.removeById(id);
+    public boolean removeById(long id) {
+        return repository.removeById(id);
     }
 }
