@@ -3,11 +3,11 @@ package controller;
 import com.google.gson.Gson;
 import model.Post;
 import service.PostService;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Reader;
-
+import org.springframework.web.bind.annotation.RestController;
+@RestController
 public class PostController {
     public static final String APPLICATION_JSON = "application/json";
     private final PostService service;
@@ -23,12 +23,14 @@ public class PostController {
         response.getWriter().print(gson.toJson(data));
     }
 
+
     public void getById(long id, HttpServletResponse response) throws IOException {
         response.setContentType(APPLICATION_JSON);
         final var gson = new Gson();
         final var data = service.getById(id);
         response.getWriter().print(gson.toJson(data));
     }
+
 
     public void save(Reader body, HttpServletResponse response) throws IOException {
         response.setContentType(APPLICATION_JSON);
@@ -37,6 +39,7 @@ public class PostController {
         final var data = service.save(post);
         response.getWriter().print(gson.toJson(data));
     }
+
 
     public void removeById(long id, HttpServletResponse response) throws IOException {
         response.setContentType(APPLICATION_JSON);
