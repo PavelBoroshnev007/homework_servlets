@@ -1,9 +1,10 @@
 package servlet;
 
+import config.AppConfig;
 import controller.PostController;
-import repository.PostRepositoryImpl;
-import service.PostService;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,27 +14,26 @@ import java.io.IOException;
 
 @WebServlet(name = "MainServlet", urlPatterns = "/api/posts/*")
 public class MainServlet extends HttpServlet {
+    @Autowired
     private PostController controller;
-
-    private static final String GET_METHOD = "GET";
-    private static final String POST_METHOD = "POST";
-    private static final String DELETE_METHOD = "DELETE";
-
-    private static final String API_PATH = "/api/posts";
-    private static final String ID_REGEX = "\\d+";
 
     @Override
     public void init() {
-        final var repository = new PostRepositoryImpl();
-        final var service = new PostService(repository);
-        controller = new PostController(service);
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        controller = context.getBean(PostController.class);
     }
 
-    @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             final var path = req.getRequestURI();
             final var method = req.getMethod();
+
+            final String GET_METHOD = "GET";
+            final String POST_METHOD = "POST";
+            final String DELETE_METHOD = "DELETE";
+
+            final String API_PATH = "/api/posts";
+            final String ID_REGEX = "\\d+";
 
             if (GET_METHOD.equals(method) && API_PATH.equals(path)) {
                 controller.all(resp);
