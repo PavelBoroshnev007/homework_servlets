@@ -1,7 +1,7 @@
-import model.Post;
+import ru.netology.model.Post;
 import org.junit.jupiter.api.Test;
-import repository.PostRepository;
-import repository.PostRepositoryImpl;
+import ru.netology.repository.PostRepository;
+import ru.netology.repository.PostRepositoryImpl;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

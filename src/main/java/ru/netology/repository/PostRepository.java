@@ -1,6 +1,6 @@
-package repository;
+package ru.netology.repository;
 
-import model.Post;
+import ru.netology.model.Post;
 
 import java.util.List;
 import java.util.Optional;

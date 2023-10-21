@@ -1,7 +1,7 @@
-package servlet;
+package ru.netology.servlet;
 
-import config.AppConfig;
-import controller.PostController;
+import ru.netology.config.AppConfig;
+import ru.netology.controller.PostController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -17,10 +17,8 @@ public class MainServlet extends HttpServlet {
     @Autowired
     private PostController controller;
 
-    @Override
-    public void init() {
-        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-        controller = context.getBean(PostController.class);
+    public MainServlet(PostController controller) {
+        this.controller = controller;
     }
 
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
