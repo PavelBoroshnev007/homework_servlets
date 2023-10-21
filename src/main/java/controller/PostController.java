@@ -6,8 +6,8 @@ import service.PostService;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Reader;
-import org.springframework.web.bind.annotation.RestController;
-@RestController
+import org.springframework.stereotype.Controller;
+@Controller
 public class PostController {
     public static final String APPLICATION_JSON = "application/json";
     private final PostService service;
